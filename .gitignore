@@ -3,4 +3,5 @@ vendor
 *.css
 *.jpg
 *.webp
+.env
 public/js/jquery.js
