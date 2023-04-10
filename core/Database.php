@@ -2,7 +2,6 @@
 
 namespace app\core;
 
-use app\app\models\User;
 use PDO;
 use PDOException;
 

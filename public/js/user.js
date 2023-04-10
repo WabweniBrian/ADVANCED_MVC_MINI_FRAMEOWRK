@@ -1,11 +1,11 @@
 $.ajax({
-  url: "/users/update",
-  method: "POST",
-  data: {
-    id: 1,
-    name: "John Doe",
-    email: "john@example.com",
-  },
+  url: "/users/userData",
+  method: "GET",
+  //   data: {
+  //     id: 1,
+  //     name: "John Doe",
+  //     email: "john@example.com",
+  //   },
   dataType: "json",
   success: function (response) {
     console.log(response);

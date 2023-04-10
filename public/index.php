@@ -23,5 +23,6 @@ $app->router->get('/users/view', [HomeController::class, 'single']);
 $app->router->get('/users/update', [HomeController::class, 'update']);
 $app->router->post('/users/update', [HomeController::class, 'update']);
 $app->router->post('/users/delete', [HomeController::class, 'delete']);
+$app->router->get('/users/userData', [HomeController::class, 'userData']);
 
 $app->run();

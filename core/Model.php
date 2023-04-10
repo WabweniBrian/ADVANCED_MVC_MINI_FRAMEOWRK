@@ -25,10 +25,11 @@ class Model
         $this->attributes[$key] = $value;
     }
 
-    public static function all()
+
+    public function all()
     {
         $db = Database::$db;
-        $stmt = $db->query("SELECT * FROM users");
+        $stmt = $db->query("SELECT * FROM $this->table ");
         $data = $stmt->fetchAll($db->pdo::FETCH_ASSOC);
         if (!$data) {
             return null;
@@ -36,10 +37,10 @@ class Model
         return $data;
     }
 
-    public static function find($id)
+    public function find($id)
     {
         $db = Database::$db;
-        $stmt = $db->query("SELECT * FROM users WHERE id = ?", [$id]);
+        $stmt = $db->query("SELECT * FROM $this->table WHERE id = ?", [$id]);
         $data = $stmt->fetch($db->pdo::FETCH_ASSOC);
         if (!$data) {
             return null;
@@ -60,10 +61,10 @@ class Model
 
         if ($this->id) {
             // Update the record
-            $query = 'UPDATE ' . "users" . ' SET ' . implode(', ', $fields) . ' WHERE id = ?';
+            $query = 'UPDATE ' . "$this->table" . ' SET ' . implode(', ', $fields) . ' WHERE id = ?';
         } else {
             // Insert a new record
-            $query = 'INSERT INTO ' . "users" . ' SET ' . implode(', ', $fields);
+            $query = 'INSERT INTO ' . "$this->table" . ' SET ' . implode(', ', $fields);
         }
 
         $stmt = Database::$db->pdo->prepare($query);
@@ -75,10 +76,10 @@ class Model
         }
     }
 
-    public static function destroy($id)
+    public function destroy($id)
     {
         $db = Database::$db;
-        $stmt = $db->query("DELETE FROM users WHERE id = ?", [$id]);
+        $stmt = $db->query("DELETE FROM $this->table WHERE id = ?", [$id]);
         return $stmt->rowCount() > 0;
     }
 

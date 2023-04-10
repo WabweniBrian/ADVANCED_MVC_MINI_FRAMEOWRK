@@ -5,17 +5,16 @@ namespace app\core;
 class Response
 {
 
-    public static function json($data, $status = 200)
+    public static function json($data, $status = '')
     {
-        self::status($status);
+        http_response_code($status);
         header('Content-Type: application/json');
         return json_encode($data);
     }
 
-    public static function send($data, $status = 200)
+    public static function send($data)
     {
-        self::status($status);
-        print_r($data);
+        echo $data;
     }
 
     public static function status($status)
