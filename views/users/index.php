@@ -1,11 +1,4 @@
-<header class=" bg-white border-bottom">
-    <nav class="container d-flex justify-content-between align-items-center">
-        <a href="index.php nav-brand">
-            <h1>Home</h1>
-        </a>
-        <a href="/logout">Logout</a>
-    </nav>
-</header>
+<?php include_once __DIR__ . './../partials/header.php'; ?>
 <div class="mt-5">
     <div class="container py-5 bg-white rounded shadow-sm border-1">
         <h1 class="text-center">Welcome, <?= $_SESSION['username'] ?> </h1>

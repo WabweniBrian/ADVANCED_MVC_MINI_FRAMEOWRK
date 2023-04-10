@@ -2,7 +2,7 @@
 
 namespace app\helpers;
 
-use app\Database;
+use app\core\Database;
 
 class Validator
 {
@@ -75,6 +75,35 @@ class Validator
         return $count == 0;
     }
 
+    private static function file($value)
+    {
+        if ($value['name']) {
+            $allowedExtensions = ["jpg", "jpeg", "png", "gif"];
+            $fileExtension = strtolower(pathinfo($value['name'], PATHINFO_EXTENSION));
+
+            if (!in_array($fileExtension, $allowedExtensions)) {
+                return false;
+            }
+
+            return true;
+        } else {
+            return true;
+        }
+    }
+
+
+    private static function size($value, $size)
+    {
+
+        $maxFileSize = $size; // 1MB in bytes
+        $fileSize = $value['size'];
+
+        if ($fileSize > $maxFileSize) {
+            return false;
+        }
+        return true;
+    }
+
     private static function getMessage($field, $rule, $params)
     {
         $messages = [
@@ -84,8 +113,19 @@ class Validator
             'max' => 'The ' . $field . ' field must not exceed ' . (isset($params[1]) ? $params[1] : '') . ' characters.',
             'match' => 'The ' . $field . ' field does not match',
             'unique' => 'The ' . $field . ' field already exists.',
+            'file' => 'The ' . $field . ' field only allows jpg, png, jpeg and gif extensions.',
+            'size' => 'The ' . $field . ' field size must not exceed ' . (isset($params[1]) ? self::getSize($params[1]) : '') . ' MBS',
         ];
 
         return $messages[$rule];
+    }
+
+    public static function getSize($val)
+    {
+        if (is_numeric($val)) {
+            return number_format($val / 1048576, 1);
+        } else {
+            return $val;
+        }
     }
 }

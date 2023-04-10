@@ -1,39 +1,37 @@
 <?php
 
-namespace app\controllers;
+namespace app\app\controllers;
 
+use app\app\models\User;
+use app\core\Cookies;
+use app\core\Router;
+use app\core\Session;
 use app\helpers\Validator;
-use app\models\User;
-use app\Router;
+
 
 class AuthController
 {
-
 
     public function register(Router $router)
     {
 
         $userData = ['username' => '', 'email' => '', 'password' => '', 'password_confirmation' => ''];
-        $errors = ['username' => '', 'email' => '', 'password' => '', 'password_confirmation' => ''];
+        $errors = ['username' => '', 'email' => '', 'password' => '', 'password_confirmation' => '', 'avatar' => ''];
 
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $userData['username'] = filter_var($_POST['username'], FILTER_SANITIZE_SPECIAL_CHARS);
-            $userData['email'] = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
-            $userData['password'] = filter_var($_POST['password'], FILTER_SANITIZE_SPECIAL_CHARS);
-            $userData['password_confirmation'] = filter_var($_POST['password_confirmation'], FILTER_SANITIZE_SPECIAL_CHARS);
-            $userData['hashed_password'] = password_hash(filter_var($_POST['password'], FILTER_SANITIZE_SPECIAL_CHARS), PASSWORD_DEFAULT);
+        if ($router->request->isPost()) {
 
+            $userData = $router->request->all();
+            $userData['avatar'] = $_FILES['avatar'] ?? null;
 
-            $user = new User();
-            $user->processData($userData);
-
+            $user = new User($userData);
             $errors = Validator::validate(
                 $userData,
                 [
                     'username' => ['required', 'min:4', 'max:20', 'unique:username'],
                     'email' => ['required', 'email', 'unique:email'],
-                    'password' => ['required', 'min:4'],
+                    'password' => ['required', 'min:4', 'max:20'],
                     'password_confirmation' => ['required', 'match:password'],
+                    'avatar' => ['file', 'size:1048576'],
                 ]
             );
 
@@ -41,9 +39,7 @@ class AuthController
 
             if (empty(array_filter($errors))) {
                 $user->registerUser();
-                session_start();
-                $_SESSION['username'] = $user->username;
-                $_SESSION['email'] = $user->email;
+                Session::setSession(['username' => $user->username, 'email' => $user->email]);
                 header('Location: /');
             }
         }
@@ -64,13 +60,10 @@ class AuthController
             $userData['remember_me'] = false;
         }
 
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $userData['email'] = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
-            $userData['password'] = filter_var($_POST['password'], FILTER_SANITIZE_SPECIAL_CHARS);
-            $userData['remember_me'] = $_POST['remember_me'] ?? null;
+        if ($router->request->isPost()) {
+            $userData = $router->request->all();
 
-            $user = new User();
-            $user->processData($userData);
+            $user = new User($userData);
 
             $errors = Validator::validate(
                 $userData,
@@ -80,16 +73,12 @@ class AuthController
                 ]
             );
 
-            $user->setUserCookies($userData);
+            Cookies::setCookies($userData);
 
             if (empty(array_filter($errors))) {
-                $userFromDb = $user->loginUser();
-                if ($userFromDb && password_verify($user->password, $userFromDb['password'])) {
-                    session_start();
-                    $_SESSION['username'] = $userFromDb['username'];
-                    $_SESSION['email'] = $user->email;
+                $isLoggedIn = $user->loginUser();
+                if ($isLoggedIn) {
                     header("Location: /");
-                    exit();
                 } else {
                     $errors['credential_err'] = 'Invalid email or password.';
                 }

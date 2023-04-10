@@ -1,15 +1,22 @@
 <?php
 
-namespace app;
+namespace app\core;
+
+use app\core\Database;
+
 
 class Router
 {
     public array $getRoutes = [];
     public array $postRoutes = [];
     public Database $db;
-    public function __construct()
+    public Request $request;
+    public Response $response;
+    public function __construct(Request $request, Response $response)
     {
         $this->db = new Database();
+        $this->request = $request;
+        $this->response = $response;
     }
 
     public function get($path, $callback)
@@ -24,11 +31,8 @@ class Router
 
     public function resolve()
     {
-        $path = $_SERVER['REQUEST_URI'] ?? '/';
-        $method = $_SERVER['REQUEST_METHOD'];
-        if (strpos($path, '?') !== false) {
-            $path = substr($path, 0, strpos($path, '?'));
-        }
+        $path = $this->request->getPath();
+        $method = $this->request->getMethod();
 
         if ($method == 'GET') {
             $callback = $this->getRoutes[$path] ?? null;
@@ -52,8 +56,8 @@ class Router
         }
 
         ob_start();
-        include_once __DIR__ . "/views/$view.php";
+        include_once __DIR__ . "./../views/$view.php";
         $content = ob_get_clean();
-        include_once __DIR__ . "./views/layout/main.php";
+        include_once __DIR__ . "./../views/layout/main.php";
     }
 }

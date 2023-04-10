@@ -3,3 +3,4 @@ vendor
 *.css
 *.jpg
 *.webp
+public/js/jquery.js
