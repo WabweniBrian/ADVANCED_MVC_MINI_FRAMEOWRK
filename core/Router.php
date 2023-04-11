@@ -3,7 +3,7 @@
 namespace app\core;
 
 use app\core\Database;
-
+use app\helpers\Console;
 
 class Router
 {
@@ -41,6 +41,14 @@ class Router
         }
 
         if ($callback !== null) {
+            $fn = explode(':', $callback[1]);
+            if (isset($fn[1])) {
+                if (!Session::isSession('username')) {
+                    header('Location: /login');
+                }
+            }
+
+            $callback[1] = $fn[0];
             call_user_func($callback, $this);
         } else {
             http_response_code(404);

@@ -4,7 +4,6 @@ namespace app\app\controllers;
 
 use app\app\models\User;
 use app\core\Router;
-use app\core\Session;
 use app\helpers\Console;
 use app\helpers\Validator;
 
@@ -12,10 +11,6 @@ class HomeController
 {
     public function index(Router $router)
     {
-        if (!Session::isSession('username')) {
-            header('Location: /login');
-            exit();
-        }
         return $router->view('users/index');
     }
 

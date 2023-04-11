@@ -6,6 +6,7 @@ In this framework, we implement alot of features an mvc framework has such as
 - Custom routing
 - PSR-4 Autoloading
 - Custom 404
+- Protected routes - You can't access some routes without being logged in
 - User authentication and validation with multiple validation rules
 - Custom Validation class with generic validation rules
 - Validator class with different validation rules and methods
@@ -38,14 +39,14 @@ $app->router->post('/login', [AuthController::class, 'login']);
 $app->router->get('/logout', [AuthController::class, 'logout']);
 
 // Home Routes
-$app->router->get('/', [HomeController::class, 'index']);
-$app->router->get('/users', [HomeController::class, 'users']);
-$app->router->get('/users/search', [HomeController::class, 'users']);
-$app->router->get('/users/view', [HomeController::class, 'single']);
-$app->router->get('/users/update', [HomeController::class, 'update']);
+$app->router->get('/', [HomeController::class, 'index:auth']);
+$app->router->get('/users', [HomeController::class, 'users:auth']);
+$app->router->get('/users/search', [HomeController::class, 'users:auth']);
+$app->router->get('/users/view', [HomeController::class, 'single:auth']);
+$app->router->get('/users/update', [HomeController::class, 'update:auth']);
 $app->router->post('/users/update', [HomeController::class, 'update']);
 $app->router->post('/users/delete', [HomeController::class, 'delete']);
-$app->router->get('/users/userData', [HomeController::class, 'userData']);
+$app->router->get('/users/userData', [HomeController::class, 'userData:auth']);
 
 $app->run();
 
@@ -149,11 +150,9 @@ class User extends Model
 
 ```php
 public function index(Router $router)
+
+      public function index(Router $router)
     {
-        if (!Session::isSession('username')) {
-            header('Location: /login');
-            exit();
-        }
         return $router->view('users/index');
     }
 

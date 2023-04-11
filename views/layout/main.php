@@ -16,7 +16,6 @@
         <?= $content ?>
     </main>
 
-
 </body>
 
 </html>
