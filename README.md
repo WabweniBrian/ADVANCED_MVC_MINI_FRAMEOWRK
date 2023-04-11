@@ -38,7 +38,7 @@ $app->router->get('/login', [AuthController::class, 'login']);
 $app->router->post('/login', [AuthController::class, 'login']);
 $app->router->get('/logout', [AuthController::class, 'logout']);
 
-// Home Routes
+// Home Routes -> Protected Routes
 $app->router->get('/', [HomeController::class, 'index:auth']);
 $app->router->get('/users', [HomeController::class, 'users:auth']);
 $app->router->get('/users/search', [HomeController::class, 'users:auth']);
