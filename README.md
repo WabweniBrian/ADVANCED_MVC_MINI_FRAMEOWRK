@@ -4,6 +4,7 @@ In this framework, we implement alot of features an mvc framework has such as
 
 - Models, Views & Contollers
 - Custom routing
+- PSR-4 Autoloading
 - Custom 404
 - User authentication and validation with multiple validation rules
 - Custom Validation class with generic validation rules
