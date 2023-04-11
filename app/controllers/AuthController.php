@@ -5,7 +5,6 @@ namespace app\app\controllers;
 use app\app\models\User;
 use app\core\Cookies;
 use app\core\Router;
-use app\core\Session;
 use app\helpers\Validator;
 
 
