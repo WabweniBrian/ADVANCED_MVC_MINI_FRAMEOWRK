@@ -6,7 +6,7 @@ use app\core\Database;
 
 class Validator
 {
-    public static function validate($data, $rules)
+    public static function validate($data, $rules): array
     {
         $errors = [];
         /** 
@@ -16,6 +16,7 @@ class Validator
          * It then gets the methods from the rule parts i.e required, min and max, unique etc.
          * It then checks if the execution of of the corresponding method is true or false passing params as arguments
          * If its true, an error is added to the errors array else false, empty string.
+         * @return array of errors
          */
         foreach ($rules as $field => $fieldRules) {
             foreach ($fieldRules as $rule) {
@@ -120,7 +121,7 @@ class Validator
         return $messages[$rule];
     }
 
-    public static function getSize($val)
+    private static function getSize($val)
     {
         if (is_numeric($val)) {
             return number_format($val / 1048576, 1);

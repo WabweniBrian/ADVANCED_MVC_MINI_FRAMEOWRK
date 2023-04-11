@@ -5,6 +5,7 @@ namespace app\app\controllers;
 use app\app\models\User;
 use app\core\Cookies;
 use app\core\Router;
+use app\helpers\Console;
 use app\helpers\Validator;
 
 
@@ -56,7 +57,6 @@ class AuthController
 
         if ($router->request->isPost()) {
             $userData = $router->request->all();
-
             $user = new User($userData);
 
             $errors = Validator::validate(

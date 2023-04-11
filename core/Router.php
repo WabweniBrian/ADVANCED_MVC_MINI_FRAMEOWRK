@@ -3,12 +3,12 @@
 namespace app\core;
 
 use app\core\Database;
-use app\helpers\Console;
+
 
 class Router
 {
-    public array $getRoutes = [];
-    public array $postRoutes = [];
+    private array $getRoutes = [];
+    private array $postRoutes = [];
     public Database $db;
     public Request $request;
     public Response $response;

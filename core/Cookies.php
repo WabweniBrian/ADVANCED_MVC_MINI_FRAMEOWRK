@@ -2,6 +2,8 @@
 
 namespace app\core;
 
+use app\helpers\Console;
+
 class Cookies
 {
     public static function setCookies(array $user): void
