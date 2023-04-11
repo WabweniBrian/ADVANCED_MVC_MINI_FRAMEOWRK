@@ -1,13 +1,14 @@
-# ADVANCED LOGIN SYSTEM WITH MVC FRAMEWORK PATTERNS
+# ADVANCED MVC MINI FRAMEWORK
 
-In this Login system, we try to implement all the cool MVC patterns such as:
+In this framework, we implement alot of features an mvc framework has such as
 
 - Models, Views & Contollers
 - Custom routing
 - Custom 404
 - User authentication and validation with multiple validation rules
 - Custom Validation class with generic validation rules
-- Remeber me functionality with user tokens
-- Email verification with OTP
-
-![screenshot](screenshot.png)
+- Generic validation for nay fields
+- Generic model class that can be extended by any class
+- Custom Response, Request, Session and Cookie classes
+- Validator class with different validation rules and methods
+- Eloquent model with methods such as save, all, find,destroy etc.
