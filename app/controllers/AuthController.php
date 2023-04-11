@@ -36,12 +36,7 @@ class AuthController
             );
 
             $user->hashed_password = password_hash($user->password, PASSWORD_DEFAULT);
-
-            if (empty(array_filter($errors))) {
-                $user->registerUser();
-                Session::setSession(['username' => $user->username, 'email' => $user->email]);
-                header('Location: /');
-            }
+            $user->registerUser($errors);
         }
         return $router->view('auth/register', ['title' => 'Register', 'user' => $userData, 'errors' => $errors]);
     }
@@ -72,17 +67,8 @@ class AuthController
                     'password' => ['required'],
                 ]
             );
-
             Cookies::setCookies($userData);
-
-            if (empty(array_filter($errors))) {
-                $isLoggedIn = $user->loginUser();
-                if ($isLoggedIn) {
-                    header("Location: /");
-                } else {
-                    $errors['credential_err'] = 'Invalid email or password.';
-                }
-            }
+            $errors['credential_err'] = $user->loginUser($errors);
         }
 
         return $router->view('auth/login', ['title' => 'Login', 'user' => $userData, 'errors' => $errors]);

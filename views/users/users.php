@@ -4,7 +4,7 @@
 
     <form action="">
         <div class="input-group mb-3">
-            <input type="text" name="search" class="form-control" placeholder="Search products..." value="<?= $search ?? '' ?>">
+            <input type="text" name="search" class="form-control" placeholder="Search products..." value="<?= $search ?>">
             <button class=" btn btn-outline-secondary" type="submit">Search</button>
         </div>
     </form>
@@ -26,7 +26,7 @@
                             <tr>
                                 <th scope="row"><?= $i + 1 ?></th>
                                 <td><?= $user['username'] ?></td>
-                                <td>$<?= $user['email'] ?></td>
+                                <td><?= $user['email'] ?></td>
                                 <td>
                                     <a href="/users/view?id=<?= $user['id'] ?>" class="btn btn-sm btn-outline-success">View</a>
                                     <a href="/users/update?id=<?= $user['id'] ?>" class="btn btn-sm btn-outline-primary">Edit</a>

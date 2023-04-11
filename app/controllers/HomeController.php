@@ -16,9 +16,6 @@ class HomeController
             header('Location: /login');
             exit();
         }
-
-        $user = new User();
-        $users = $user->all();
         return $router->view('users/index');
     }
 
@@ -34,9 +31,10 @@ class HomeController
 
     public function users(Router $router)
     {
+        $searchTerm = $router->request->search ?? '';
         $user = new User();
-        $users = $user->all();
-        return $router->view('users/users', ['users' => $users]);
+        $users = $user->all(['username' => $searchTerm, 'email' => $searchTerm]);
+        return $router->view('users/users', ['users' => $users, 'search' => $searchTerm]);
     }
 
     // public function userData(Router $router)

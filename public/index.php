@@ -19,6 +19,7 @@ $app->router->get('/logout', [AuthController::class, 'logout']);
 // Home Routes
 $app->router->get('/', [HomeController::class, 'index']);
 $app->router->get('/users', [HomeController::class, 'users']);
+$app->router->get('/users/search', [HomeController::class, 'users']);
 $app->router->get('/users/view', [HomeController::class, 'single']);
 $app->router->get('/users/update', [HomeController::class, 'update']);
 $app->router->post('/users/update', [HomeController::class, 'update']);

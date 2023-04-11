@@ -2,8 +2,6 @@
 
 namespace app\core;
 
-use app\core\DB;
-
 class Model
 {
     protected  $table;
@@ -26,11 +24,32 @@ class Model
     }
 
 
-    public function all()
+    public function all($search = null)
     {
-        $db = Database::$db;
-        $stmt = $db->query("SELECT * FROM $this->table ");
-        $data = $stmt->fetchAll($db->pdo::FETCH_ASSOC);
+
+        $where = '';
+        $params = array();
+        $data = [];
+        if ($search) {
+            if (is_array($search)) {
+                $conditions = array();
+                foreach ($search as $field => $term) {
+                    $conditions[] = "$field LIKE ?";
+                    $params[] = "%$term%";
+                }
+                $where = 'WHERE ' . implode(' || ', $conditions);
+                $query = "SELECT * FROM $this->table $where";
+            } else {
+                $data = [];
+            }
+        } else {
+            $query = "SELECT * FROM $this->table";
+        }
+
+
+        $stmt = Database::$db->query($query, $params);
+        $data = $stmt->fetchAll(Database::$db->pdo::FETCH_ASSOC);
+
         if (!$data) {
             return null;
         }
@@ -53,7 +72,6 @@ class Model
         $params = [];
         $fields = [];
 
-
         foreach ($this->fillable as $field) {
             $fields[] = $field . ' = ?';
             $params[] = $this->$field;
@@ -67,8 +85,7 @@ class Model
             $query = 'INSERT INTO ' . "$this->table" . ' SET ' . implode(', ', $fields);
         }
 
-        $stmt = Database::$db->pdo->prepare($query);
-        $stmt->execute($params);
+        $stmt = Database::$db->query($query, $params);
 
         // If it's a new record, set the id property
         if (!$this->id) {
@@ -83,27 +100,36 @@ class Model
         return $stmt->rowCount() > 0;
     }
 
-    public function registerUser()
+    public function registerUser($errors)
     {
         $db = Database::$db;
         $stmt = $db->query(
             "INSERT INTO users (username, email, password) VALUES(?,?,?)",
             [$this->username, $this->email, $this->hashed_password]
         );
+        if (empty(array_filter($errors))) {
+            Session::setSession(['username' => $this->username, 'email' => $this->email]);
+            header('Location: /');
+        }
     }
 
 
-    public function loginUser()
+    public function loginUser($errors)
     {
+        $invalidLogin = '';
         $db = Database::$db;
         $stmt = $db->query("SELECT * FROM users WHERE email= ?", [$this->email]);
         $user = $stmt->fetch();
-        if ($user && password_verify($this->password, $user['password'])) {
-            Session::setSession(['username' => $user['username'], 'email' => $this->email]);
-            return true;
-        } else {
-            return false;
+        if (empty(array_filter($errors))) {
+            if ($user && password_verify($this->password, $user['password'])) {
+                Session::setSession(['username' => $user['username'], 'email' => $this->email]);
+                header("Location: /");
+            } else {
+                $errors['credential_err'] = 'Invalid email or password.';
+                $invalidLogin = $errors['credential_err'];
+            }
         }
+        return $invalidLogin;
     }
 
     public function logoutUser()

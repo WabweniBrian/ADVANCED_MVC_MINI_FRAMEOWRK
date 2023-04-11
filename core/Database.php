@@ -9,7 +9,7 @@ class Database
 {
 
     public PDO $pdo;
-    public string $dsn = "mysql:host=localhost;port=3306;dbname=login_23;charset=utf8";
+    private string $dsn = "mysql:host=localhost;port=3306;dbname=login_23;charset=utf8";
     public static $db;
 
     public function __construct()
